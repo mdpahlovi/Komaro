@@ -1,36 +1,38 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { BottomTabBar } from 'components/bottom-tabs';
+import { Home, Heart, Bag, Profile } from 'components/icons';
+import { HomeFilled, HeartFilled, BagFilled, ProfileFilled } from 'components/icons/filled';
 import { Tabs } from 'expo-router';
 
-export default function HomeLayout() {
+export default function MainLayout() {
     return (
-        <Tabs screenOptions={{ tabBarLabelStyle: { fontFamily: 'Roboto-Regular' } }}>
+        <Tabs tabBar={(props) => <BottomTabBar {...props} />}>
             <Tabs.Screen
-                name="index"
+                name="home"
                 options={{
-                    title: 'Home',
                     headerShown: false,
-                    tabBarIcon: (props) => <MaterialIcons name="home" {...props} />,
+                    title: 'Home',
+                    tabBarIcon: ({ color, focused }) => (focused ? <HomeFilled color={color} /> : <Home color={color} />),
                 }}
             />
             <Tabs.Screen
-                name="card"
+                name="love"
                 options={{
-                    title: 'Card',
-                    tabBarIcon: (props) => <MaterialIcons name="shopping-cart" {...props} />,
+                    title: 'Love',
+                    tabBarIcon: ({ color, focused }) => (focused ? <HeartFilled color={color} /> : <Heart color={color} />),
                 }}
             />
             <Tabs.Screen
-                name="payment"
+                name="cart"
                 options={{
-                    title: 'Payment',
-                    tabBarIcon: (props) => <MaterialIcons name="account-balance-wallet" {...props} />,
+                    title: 'Cart',
+                    tabBarIcon: ({ color, focused }) => (focused ? <BagFilled color={color} /> : <Bag color={color} />),
                 }}
             />
             <Tabs.Screen
                 name="profile"
                 options={{
                     title: 'Profile',
-                    tabBarIcon: (props) => <MaterialIcons name="person" {...props} />,
+                    tabBarIcon: ({ color, focused }) => (focused ? <ProfileFilled color={color} /> : <Profile color={color} />),
                 }}
             />
         </Tabs>

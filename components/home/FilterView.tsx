@@ -32,7 +32,7 @@ export default function FilterView() {
     return (
         <View style={{ flex: 1 }}>
             <BottomSheetScrollView>
-                <View style={{ paddingHorizontal: 20, gap: 16 }}>
+                <View style={{ paddingHorizontal: 16, gap: 16 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Text variant="heading">Filters</Text>
                         <Pressable>

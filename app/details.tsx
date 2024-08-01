@@ -1,6 +1,7 @@
-import { MaterialIcons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useTheme } from '@react-navigation/native';
+import { ArrowLeft, Bag, Heart } from 'components/icons';
+import { StarFilled } from 'components/icons/filled';
 import { Counter, Button, ActionButton, Text } from 'components/ui';
 import { useNavigation } from 'expo-router';
 import { useState } from 'react';
@@ -31,29 +32,29 @@ export default function DetailsScreen() {
                     { flexDirection: 'row', alignItems: 'center', padding: 20, gap: 8 },
                 ]}>
                 <Button variant="outlined" iconButton onPress={() => navigation.goBack()}>
-                    <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                    <ArrowLeft color="#fff" />
                 </Button>
                 <View style={{ flex: 1 }} />
                 <Button variant="outlined" iconButton>
-                    <MaterialIcons name="favorite-border" size={24} color="#fff" />
+                    <Heart color="#fff" />
                 </Button>
                 <Button variant="outlined" iconButton>
-                    <MaterialIcons name="add-shopping-cart" size={24} color="#fff" />
+                    <Bag color="#fff" />
                 </Button>
             </SafeAreaView>
 
             <BottomSheet
                 detached
-                snapPoints={[132, 432]}
-                backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: colors.background }}
+                snapPoints={[128, 426]}
+                backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: 'red' }}
                 handleIndicatorStyle={{ backgroundColor: colors.primary }}>
-                <View style={{ paddingHorizontal: 20, gap: 16 }}>
+                <View style={{ paddingHorizontal: 16, gap: 16 }}>
                     <Text variant="heading">PUMA Everyday Hussle</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                        <View style={{ flex: 1 }}>
-                            <View style={{ flexDirection: 'row', gap: 2 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                        <View>
+                            <View style={{ flexDirection: 'row', gap: 1 }}>
                                 {new Array(5).fill('').map((_, i) => (
-                                    <MaterialIcons key={i} name={i < 3 ? 'star' : 'star-border'} color="#facc15" size={20} />
+                                    <StarFilled key={i} color="#facc15" transform={[{ scale: 0.8 }]} />
                                 ))}
                             </View>
                             <Text variant="body-sm">3.0 (250K Reviews)</Text>
