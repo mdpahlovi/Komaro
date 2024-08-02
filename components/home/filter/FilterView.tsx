@@ -1,11 +1,10 @@
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Button, Text } from 'components/ui';
+import { Button, Text, ActionButton } from 'components/ui';
 import { useState } from 'react';
 import { View, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import PriceRangeSelector from './PriceRangeSelector';
-import ActionButton from '../ui/ActionButton';
 
 const MAX_PRICE = 500;
 

@@ -17,7 +17,7 @@ export default function Button({ style, children, iconButton, variant = 'default
             {...props}
             style={[
                 { height: size === 'small' ? 36 : 44, alignItems: 'center', justifyContent: 'center', borderRadius: 22 },
-                variant === 'default' ? { backgroundColor: card } : null,
+                variant === 'default' ? { backgroundColor: card, borderWidth: 1, borderColor: border } : null,
                 variant === 'primary' ? { backgroundColor: primary } : null,
                 variant === 'outlined' ? { borderWidth: 1, borderColor: border } : null,
                 iconButton ? { width: size === 'small' ? 36 : 44 } : { paddingHorizontal: size === 'small' ? 20 : 28 },

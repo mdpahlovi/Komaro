@@ -11,11 +11,11 @@ export default function BottomTabBar({ state, navigation, descriptors, insets }:
 
     return (
         <>
-            <View style={{ height: 56 / 2 }} />
+            <View style={{ height: 56 / 2, backgroundColor: colors.background }} />
             <View
                 style={[
-                    { position: 'absolute', left: 0, right: 0, bottom: 0, borderRadius: 9999 },
-                    { marginHorizontal: 16, height: 56, backgroundColor: colors.card },
+                    { position: 'absolute', left: 0, right: 0, bottom: 0, height: 56, borderRadius: 9999 },
+                    { marginHorizontal: 16, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
                 ]}>
                 <View role="tablist" style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                     {state.routes.map((route, index) => {

@@ -1,37 +1,48 @@
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useTheme } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Bag, Heart } from 'components/icons';
 import { StarFilled } from 'components/icons/filled';
 import { Counter, Button, ActionButton, Text } from 'components/ui';
-import { useNavigation } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Product } from 'types';
+import { axios } from 'utilities/axios';
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
 
 export default function DetailsScreen() {
+    const { back } = useRouter();
     const { colors } = useTheme();
-    const navigation = useNavigation();
+    const { id } = useLocalSearchParams();
     const [count, setCount] = useState(1);
     const [size, setSize] = useState(SIZES[0]);
 
+    const { data } = useQuery<Product>({
+        queryKey: ['product', { id }],
+        queryFn: async () => await axios.get(`/products/${id}`).then((res) => res.data),
+    });
+
+    if (!data)
+        return (
+            <SafeAreaView>
+                <Text>Loading...</Text>
+            </SafeAreaView>
+        );
+
     return (
-        <View style={{ flex: 1 }}>
-            <Image
-                source={{
-                    uri: 'https://images.unsplash.com/photo-1571945153237-4929e783af4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80',
-                }}
-                style={{ flex: 1 }}
-            />
+        <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 16 }}>
+            <Image src={data?.thumbnail} style={{ aspectRatio: 3 / 4 }} />
 
             <SafeAreaView
                 edges={['top']}
                 style={[
                     { position: 'absolute', top: 0, left: 0, right: 0 },
-                    { flexDirection: 'row', alignItems: 'center', padding: 20, gap: 8 },
+                    { flexDirection: 'row', alignItems: 'center', padding: 16, gap: 8 },
                 ]}>
-                <Button variant="outlined" iconButton onPress={() => navigation.goBack()}>
+                <Button variant="outlined" iconButton onPress={back}>
                     <ArrowLeft color="#fff" />
                 </Button>
                 <View style={{ flex: 1 }} />
@@ -46,10 +57,10 @@ export default function DetailsScreen() {
             <BottomSheet
                 detached
                 snapPoints={[128, 426]}
-                backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: 'red' }}
+                backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: colors.background }}
                 handleIndicatorStyle={{ backgroundColor: colors.primary }}>
                 <View style={{ paddingHorizontal: 16, gap: 16 }}>
-                    <Text variant="heading">PUMA Everyday Hussle</Text>
+                    <Text variant="heading">{data?.title}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                         <View>
                             <View style={{ flexDirection: 'row', gap: 1 }}>
@@ -82,16 +93,13 @@ export default function DetailsScreen() {
                     </View>
                     <View>
                         <Text variant="title">Description</Text>
-                        <Text numberOfLines={3} variant="body">
-                            Aute magna dolore sint ipsum dolor fugiat. Ad magna ad elit labore culpa sunt sint laboris consectetur sunt.
-                            Lorem excepteur occaecat reprehenderit nostrud culpa ad ex exercitation tempor.
-                        </Text>
+                        <Text variant="body">{data?.description}</Text>
                     </View>
                     <View style={{ flex: 1 }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
                         <View style={{ flex: 1 }}>
                             <Text variant="body-sm">Total</Text>
-                            <Text variant="title">${(25000).toLocaleString()}</Text>
+                            <Text variant="title">${(data?.price).toLocaleString()}</Text>
                         </View>
 
                         <ActionButton icon="arrow-forward">Add to Cart</ActionButton>

@@ -1,6 +1,6 @@
-export { default as CustomBackdrop } from './CustomBackdrop';
-export { default as FilterView } from './FilterView';
-export { default as PriceRangeSelector } from './PriceRangeSelector';
-export { default as ProductCard } from './ProductCard';
+export { default as Header } from './Header';
+export { default as Categories } from './Categories';
+export { default as Products } from './products/Products';
+export { default as Filter } from './filter/Filter';
 
 export { products } from './data';

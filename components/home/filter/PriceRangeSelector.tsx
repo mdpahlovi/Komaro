@@ -1,10 +1,9 @@
 import { useTheme } from '@react-navigation/native';
+import { Text } from 'components/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-
-import { Text } from '@/components/ui';
 
 export default function PriceRangeSelector({
     minPrice,
