@@ -91,7 +91,7 @@ export default function FilterView() {
             {/* Button */}
 
             <View style={{ padding: 16, paddingBottom: 16 + bottom }}>
-                <ActionButton icon="arrow-forward">Apply filters</ActionButton>
+                <ActionButton>Apply filters</ActionButton>
             </View>
         </View>
     );

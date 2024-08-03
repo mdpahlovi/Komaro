@@ -1,23 +1,25 @@
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useTheme } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Bag, Heart } from 'components/icons';
+import { Bag, Heart } from 'components/icons';
 import { StarFilled } from 'components/icons/filled';
-import { Counter, Button, ActionButton, Text } from 'components/ui';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Counter, Button, ActionButton, Text, BackButton } from 'components/ui';
+import { useLocalSearchParams } from 'expo-router';
+import { useProductState } from 'hooks/useProductState';
 import { useState } from 'react';
 import { View, Image, type LayoutRectangle, Dimensions, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Product } from 'types';
+import type { Product } from 'types';
 import { axios } from 'utilities/axios';
 
+const getPrice = (data: Product, count: number) =>
+    (data?.price * count * ((100 - data?.discountPercentage) / 100)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
 export default function DetailsScreen() {
-    const { back } = useRouter();
     const { colors } = useTheme();
     const { id } = useLocalSearchParams();
     const [layout, setLayout] = useState<LayoutRectangle>();
-
-    const [count, setCount] = useState(1);
+    const { count, setCount } = useProductState();
 
     const { data } = useQuery<Product>({
         queryKey: ['product', { id }],
@@ -35,9 +37,7 @@ export default function DetailsScreen() {
             )}
 
             <SafeAreaView edges={['top']} style={[{ position: 'absolute', top: 16, left: 16, right: 16, flexDirection: 'row', gap: 8 }]}>
-                <Button iconButton onPress={back}>
-                    <ArrowLeft color={colors.text} />
-                </Button>
+                <BackButton />
                 <View style={{ flex: 1 }} />
                 <Button iconButton>
                     <Heart color={colors.text} />
@@ -57,41 +57,54 @@ export default function DetailsScreen() {
                         <Text variant="heading">{data?.title}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                             <View>
-                                <View style={{ flexDirection: 'row', gap: 1 }}>
+                                <View style={{ flexDirection: 'row', gap: 4 }}>
                                     {new Array(5).fill('').map((_, i) => (
-                                        <StarFilled key={i} color="#facc15" transform={[{ scale: 0.8 }]} />
+                                        <StarFilled key={i} color="#facc15" size={16} />
                                     ))}
                                 </View>
-                                <Text variant="body-sm">3.0 (250K Reviews)</Text>
+                                <Text variant="body-sm">
+                                    {data?.rating} ({(data?.reviews?.length).toString().padStart(2, '0')} Reviews)
+                                </Text>
                             </View>
-                            <Counter value={count} onChange={setCount} />
+                            <Counter value={count} onChange={setCount} maxValue={data?.stock} />
                         </View>
-                        <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                                <Text variant="title">Model is 6'1'', Size M</Text>
-                                <Text variant="action">Size Guide</Text>
-                            </View>
-
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
-                                {['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'].map((s, i) => (
-                                    <Button key={i} variant={i === 0 ? 'primary' : 'default'} iconButton textStyle={{ fontSize: 12 }}>
-                                        {s}
-                                    </Button>
-                                ))}
-                            </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text
+                                variant="title"
+                                style={[
+                                    { paddingHorizontal: 10, paddingVertical: 4, lineHeight: 18, borderRadius: 9999 },
+                                    { backgroundColor: data?.availabilityStatus === 'In Stock' ? 'green' : colors?.notification },
+                                ]}>
+                                {(data?.stock).toString().padStart(2, '0')} - {data?.availabilityStatus}
+                            </Text>
+                            <View style={{ flex: 1 }} />
                         </View>
                         <View>
                             <Text variant="title">Description</Text>
                             <Text variant="body">{data?.description}</Text>
+                            <Text>→ {data?.warrantyInformation}</Text>
+                            <Text>
+                                → {data?.shippingInformation} - {data?.returnPolicy}
+                            </Text>
                         </View>
                         <View style={{ flex: 1 }} />
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
                             <View style={{ flex: 1 }}>
                                 <Text variant="body-sm">Total</Text>
-                                <Text variant="title">${(data?.price).toLocaleString()}</Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                    <Text variant="title">{getPrice(data, count)}</Text>
+                                    <Text
+                                        variant="title"
+                                        style={[
+                                            { marginTop: 2, paddingHorizontal: 4, fontSize: 10, lineHeight: 12 },
+                                            { backgroundColor: colors?.notification, borderRadius: 8 },
+                                        ]}>
+                                        {-data?.discountPercentage}%
+                                    </Text>
+                                </View>
                             </View>
 
-                            <ActionButton icon="arrow-forward">Add to Cart</ActionButton>
+                            <ActionButton>Proceed Pay</ActionButton>
                         </View>
                     </View>
                 </BottomSheet>

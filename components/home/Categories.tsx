@@ -23,7 +23,7 @@ export default function Categories() {
                     key={index}
                     variant={item?.slug === query?.category ? 'primary' : 'default'}
                     size="small"
-                    onPress={() => setQuery('category', item?.slug)}
+                    onPress={() => setQuery('category', item?.slug || '')}
                     style={{ height: 32, paddingHorizontal: 12 }}>
                     {item?.name || '          '}
                 </Button>

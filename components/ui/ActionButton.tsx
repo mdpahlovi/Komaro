@@ -1,11 +1,8 @@
-import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { ArrowRight } from 'components/icons';
 import { View, Text, Pressable, PressableProps } from 'react-native';
 
-type ActionButtonProps = { icon: keyof typeof MaterialIcons.glyphMap } & PressableProps;
-
-export default function ActionButton({ style, children, icon, ...props }: ActionButtonProps) {
+export default function ActionButton({ style, children, ...props }: PressableProps) {
     const { colors } = useTheme();
     const { primary, text, card: backgroundColor } = colors;
 
@@ -13,7 +10,7 @@ export default function ActionButton({ style, children, icon, ...props }: Action
         <Pressable
             {...props}
             style={[
-                { backgroundColor: primary, borderRadius: 64, padding: 6, gap: 16 },
+                { backgroundColor: primary, borderRadius: 22, padding: 6, gap: 14 },
                 { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
             ]}>
             <Text style={{ paddingLeft: 14, fontFamily: 'Roboto-Medium', color: text }}>{children as React.ReactNode}</Text>

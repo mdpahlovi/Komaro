@@ -10,7 +10,7 @@ export default function Input({ style, placeholderTextColor, ...props }: TextInp
         <TextInput
             style={[
                 { backgroundColor: card, borderWidth: 1, borderColor: border, color: text },
-                { flex: 1, paddingHorizontal: 28, borderRadius: 9999, fontFamily: 'Roboto-Medium' },
+                { flex: 1, paddingHorizontal: 20, borderRadius: 9999, fontFamily: 'Roboto-Medium' },
                 style,
             ]}
             placeholderTextColor={placeholderTextColor || Color(text).alpha(0.75).toString()}

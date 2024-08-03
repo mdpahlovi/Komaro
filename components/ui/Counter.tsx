@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { Pressable, View, Text } from 'react-native';
 
-export default function Counter({ value, onChange }: { value: number; onChange: (value: number) => void }) {
+export default function Counter({ value, onChange, maxValue }: { value: number; onChange: (value: number) => void; maxValue?: number }) {
     const { colors } = useTheme();
     const { primary, card, text } = colors;
 
@@ -17,7 +17,7 @@ export default function Counter({ value, onChange }: { value: number; onChange: 
                 {value.toString().padStart(2, '0')}
             </Text>
             <Pressable
-                onPress={() => onChange(Math.min(1000, value + 1))}
+                onPress={() => onChange(Math.min(maxValue ? maxValue : 1000, value + 1))}
                 style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', borderRadius: 16, backgroundColor: card }}>
                 <MaterialIcons name="add" size={20} color={text} />
             </Pressable>

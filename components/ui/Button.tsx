@@ -20,7 +20,7 @@ export default function Button({ style, children, iconButton, variant = 'default
                 variant === 'default' ? { backgroundColor: card, borderWidth: 1, borderColor: border } : null,
                 variant === 'primary' ? { backgroundColor: primary } : null,
                 variant === 'outlined' ? { borderWidth: 1, borderColor: border } : null,
-                iconButton ? { width: size === 'small' ? 36 : 44 } : { paddingHorizontal: size === 'small' ? 20 : 28 },
+                iconButton ? { width: size === 'small' ? 36 : 44 } : { paddingHorizontal: size === 'small' ? 16 : 20 },
                 style as StyleProp<ViewStyle>,
             ]}>
             <Text
