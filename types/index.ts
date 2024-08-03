@@ -24,6 +24,8 @@ export type Category =
     | 'womens-shoes'
     | 'womens-watches';
 
+export type Review = { rating: number; comment: string; date: string; reviewerName: string; reviewerEmail: string };
+
 export type Product = {
     id: number;
     title: string;
@@ -45,13 +47,7 @@ export type Product = {
     warrantyInformation: string;
     shippingInformation: string;
     availabilityStatus: string;
-    reviews: {
-        rating: number;
-        comment: string;
-        date: string;
-        reviewerName: string;
-        reviewerEmail: string;
-    }[];
+    reviews: Review[];
     returnPolicy: string;
     minimumOrderQuantity: number;
     meta: {

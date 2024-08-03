@@ -14,17 +14,18 @@ export default function Categories() {
     return (
         <FlatList
             horizontal
-            data={[{ name: 'All', slug: '' }, ...(data ? data : [])]}
+            data={[{ name: 'All', slug: '' }, ...(data ? data : [...Array(5)])]}
             style={{ maxHeight: 48 }}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ gap: 6, alignItems: 'center' }}
-            renderItem={({ item: { name, slug } }) => (
+            renderItem={({ item, index }) => (
                 <Button
-                    key={slug}
-                    variant={slug === query.category ? 'primary' : 'default'}
+                    key={index}
+                    variant={item?.slug === query?.category ? 'primary' : 'default'}
                     size="small"
-                    onPress={() => setQuery('category', slug)}>
-                    {name}
+                    onPress={() => setQuery('category', item?.slug)}
+                    style={{ height: 32, paddingHorizontal: 12 }}>
+                    {item?.name || '          '}
                 </Button>
             )}
         />
