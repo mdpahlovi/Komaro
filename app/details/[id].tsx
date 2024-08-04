@@ -5,6 +5,8 @@ import { Bag, Heart } from 'components/icons';
 import { StarFilled } from 'components/icons/filled';
 import { Counter, Button, ActionButton, Text, BackButton } from 'components/ui';
 import { useLocalSearchParams } from 'expo-router';
+import { useCartState } from 'hooks/useCartState';
+import { useLovedProductsState } from 'hooks/useLovedProductState';
 import { useProductState } from 'hooks/useProductState';
 import { useState } from 'react';
 import { View, Image, type LayoutRectangle, Dimensions, ActivityIndicator } from 'react-native';
@@ -20,6 +22,8 @@ export default function DetailsScreen() {
     const { id } = useLocalSearchParams();
     const [layout, setLayout] = useState<LayoutRectangle>();
     const { count, setCount } = useProductState();
+    const { addToCart } = useCartState();
+    const { addToLovedProducts } = useLovedProductsState();
 
     const { data } = useQuery<Product>({
         queryKey: ['product', { id }],
@@ -39,10 +43,24 @@ export default function DetailsScreen() {
             <SafeAreaView edges={['top']} style={[{ position: 'absolute', top: 16, left: 16, right: 16, flexDirection: 'row', gap: 8 }]}>
                 <BackButton />
                 <View style={{ flex: 1 }} />
-                <Button iconButton>
+                <Button
+                    onPress={() => {
+                        if (!data) return;
+                        const { id, title, thumbnail, price, discountPercentage: discount } = data;
+
+                        addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) });
+                    }}
+                    iconButton>
                     <Heart color={colors.text} />
                 </Button>
-                <Button iconButton>
+                <Button
+                    onPress={() => {
+                        if (!data) return;
+                        const { id, title, thumbnail, price, discountPercentage: discount } = data;
+
+                        addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count });
+                    }}
+                    iconButton>
                     <Bag color={colors.text} />
                 </Button>
             </SafeAreaView>
@@ -50,7 +68,7 @@ export default function DetailsScreen() {
             {data ? (
                 <BottomSheet
                     detached
-                    snapPoints={[128, (layout?.height || 0) + 44]}
+                    snapPoints={[124, (layout?.height || 0) + 44]}
                     backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: colors.card }}
                     handleIndicatorStyle={{ backgroundColor: colors.primary }}>
                     <View onLayout={(e) => setLayout(e.nativeEvent.layout)} style={{ paddingHorizontal: 16, gap: 16 }}>

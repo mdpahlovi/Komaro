@@ -5,7 +5,7 @@ import { Tabs } from 'expo-router';
 
 export default function MainLayout() {
     return (
-        <Tabs tabBar={(props) => <BottomTabBar {...props} />}>
+        <Tabs tabBar={(props) => <BottomTabBar {...props} />} screenOptions={{ headerTitleStyle: { fontFamily: 'Roboto-Bold' } }}>
             <Tabs.Screen
                 name="home"
                 options={{
