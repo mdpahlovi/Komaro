@@ -1,10 +1,9 @@
-import { useTheme } from '@react-navigation/native';
 import { ArrowRight } from 'components/icons';
+import { useColors } from 'hooks/useColors';
 import { View, Text, Pressable, PressableProps } from 'react-native';
 
 export default function ActionButton({ style, children, ...props }: PressableProps) {
-    const { colors } = useTheme();
-    const { primary, text, card: backgroundColor } = colors;
+    const { primary, text, card: backgroundColor } = useColors();
 
     return (
         <Pressable

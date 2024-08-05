@@ -1,11 +1,12 @@
 import type { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
-import { Link, useTheme } from '@react-navigation/native';
+import { Link } from '@react-navigation/native';
 import TabBarIcon from 'components/bottom-tabs/TabBarIcon';
 import type { BottomTabBarItemProps } from 'components/bottom-tabs/type';
+import { useColors } from 'hooks/useColors';
 import { Platform, Pressable, Text } from 'react-native';
 
 export default function BottomTabBarItem({ focused, label, icon, badge, to, onPress, onLongPress }: BottomTabBarItemProps) {
-    const { colors } = useTheme();
+    const { primary } = useColors();
 
     return Button({
         to,
@@ -15,7 +16,7 @@ export default function BottomTabBarItem({ focused, label, icon, badge, to, onPr
         accessibilityState: { selected: focused },
         style: [
             { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, margin: 6, paddingHorizontal: 16 },
-            focused ? { backgroundColor: colors.primary, borderRadius: 9999 } : null,
+            focused ? { backgroundColor: primary, borderRadius: 9999 } : null,
         ],
         children: (
             <>

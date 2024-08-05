@@ -1,12 +1,13 @@
-import { useTheme } from '@react-navigation/native';
 import type { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
+import { Text } from 'components/ui';
+import { useColors } from 'hooks/useColors';
 import { ActivityIndicator, View } from 'react-native';
 import type { ProductResponse } from 'types';
 
 import ProductCard from './ProductCard';
 
 export default function Products({ queryResult }: { queryResult: UseInfiniteQueryResult<InfiniteData<ProductResponse, unknown>, Error> }) {
-    const { colors } = useTheme();
+    const { primary } = useColors();
     const { data, isLoading, isFetchingNextPage } = queryResult;
 
     return (
@@ -26,7 +27,8 @@ export default function Products({ queryResult }: { queryResult: UseInfiniteQuer
                   )
                 : null}
 
-            {isLoading || isFetchingNextPage ? <ActivityIndicator size="large" color={colors.primary} /> : null}
+            {isLoading || isFetchingNextPage ? <ActivityIndicator size="large" color={primary} /> : null}
+            {!data?.pages?.length && !isLoading && !isFetchingNextPage ? <Text variant="body">OPPS! No Products Available...!</Text> : null}
         </View>
     );
 }

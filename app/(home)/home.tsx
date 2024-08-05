@@ -1,8 +1,8 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useTheme } from '@react-navigation/native';
 import { Categories, Products, Filter, Header, useProductInfinityQuery } from 'components/home';
 import { Filter as FilterIcon } from 'components/icons';
 import { Button, Input } from 'components/ui';
+import { useColors } from 'hooks/useColors';
 import { useRef } from 'react';
 import { View, ScrollView, type NativeScrollEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: Nati
     layoutMeasurement.height + contentOffset.y >= contentSize.height - (16 + 28);
 
 export default function HomeScreen() {
-    const { colors } = useTheme();
+    const { text } = useColors();
     const queryResult = useProductInfinityQuery();
     const bottomSheetModalRef = useRef<BottomSheetModal | null>(null);
 
@@ -26,7 +26,7 @@ export default function HomeScreen() {
                 <View style={{ flexDirection: 'row', gap: 16 }}>
                     <Input placeholder="Search..." />
                     <Button variant="primary" onPress={() => bottomSheetModalRef.current?.present()} iconButton>
-                        <FilterIcon color={colors.text} />
+                        <FilterIcon color={text} />
                     </Button>
                 </View>
                 <Categories />

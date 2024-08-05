@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native';
+import { useColors } from 'hooks/useColors';
 import { Pressable, Text, PressableProps, StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 type ButtonProps = {
@@ -9,8 +9,7 @@ type ButtonProps = {
 } & PressableProps;
 
 export default function Button({ style, children, iconButton, variant = 'default', size = 'default', textStyle, ...props }: ButtonProps) {
-    const { colors } = useTheme();
-    const { card, primary, border, text } = colors;
+    const { card, primary, border, text } = useColors();
 
     return (
         <Pressable

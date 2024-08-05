@@ -12,7 +12,7 @@ interface ProductState {
 
 export const useProductState = create<ProductState>()(
     devtools((set) => ({
-        query: { category: '', limit: '10', select: 'title,thumbnail,price,discountPercentage' },
+        query: { category: '', limit: '10', select: 'title,thumbnail,price,discountPercentage,stock' },
         setQuery: (name, value) => set(({ query }) => ({ query: { ...query, [name]: value } })),
         count: 1,
         setCount: (count) => set({ count }),

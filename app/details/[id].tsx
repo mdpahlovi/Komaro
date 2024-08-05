@@ -1,11 +1,11 @@
 import BottomSheet from '@gorhom/bottom-sheet';
-import { useTheme } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { Bag, Heart } from 'components/icons';
 import { StarFilled } from 'components/icons/filled';
 import { Counter, Button, ActionButton, Text, BackButton } from 'components/ui';
 import { useLocalSearchParams } from 'expo-router';
 import { useCartState } from 'hooks/useCartState';
+import { useColors } from 'hooks/useColors';
 import { useLovedProductsState } from 'hooks/useLovedProductState';
 import { useProductState } from 'hooks/useProductState';
 import { useState } from 'react';
@@ -14,11 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Product } from 'types';
 import { axios } from 'utilities/axios';
 
-const getPrice = (data: Product, count: number) =>
-    (data?.price * count * ((100 - data?.discountPercentage) / 100)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+const getPrice = (price: number, discount: number, count: number) =>
+    (price * count * ((100 - discount) / 100)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
 export default function DetailsScreen() {
-    const { colors } = useTheme();
+    const { primary, text, card, notification } = useColors();
     const { id } = useLocalSearchParams();
     const [layout, setLayout] = useState<LayoutRectangle>();
     const { count, setCount } = useProductState();
@@ -36,7 +36,7 @@ export default function DetailsScreen() {
                 <Image src={data?.thumbnail} style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width }} />
             ) : (
                 <View>
-                    <ActivityIndicator size={120} color={colors.primary} />
+                    <ActivityIndicator size={120} color={primary} />
                 </View>
             )}
 
@@ -51,17 +51,17 @@ export default function DetailsScreen() {
                         addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) });
                     }}
                     iconButton>
-                    <Heart color={colors.text} />
+                    <Heart color={text} />
                 </Button>
                 <Button
                     onPress={() => {
                         if (!data) return;
-                        const { id, title, thumbnail, price, discountPercentage: discount } = data;
+                        const { id, title, thumbnail, price, discountPercentage: discount, stock } = data;
 
-                        addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count });
+                        addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
                     }}
                     iconButton>
-                    <Bag color={colors.text} />
+                    <Bag color={text} />
                 </Button>
             </SafeAreaView>
 
@@ -69,8 +69,8 @@ export default function DetailsScreen() {
                 <BottomSheet
                     detached
                     snapPoints={[124, (layout?.height || 0) + 44]}
-                    backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: colors.card }}
-                    handleIndicatorStyle={{ backgroundColor: colors.primary }}>
+                    backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: card }}
+                    handleIndicatorStyle={{ backgroundColor: primary }}>
                     <View onLayout={(e) => setLayout(e.nativeEvent.layout)} style={{ paddingHorizontal: 16, gap: 16 }}>
                         <Text variant="heading">{data?.title}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
@@ -91,7 +91,7 @@ export default function DetailsScreen() {
                                 variant="title"
                                 style={[
                                     { paddingHorizontal: 10, paddingVertical: 4, lineHeight: 18, borderRadius: 9999 },
-                                    { backgroundColor: data?.availabilityStatus === 'In Stock' ? 'green' : colors?.notification },
+                                    { backgroundColor: data?.availabilityStatus === 'In Stock' ? 'green' : notification },
                                 ]}>
                                 {(data?.stock).toString().padStart(2, '0')} - {data?.availabilityStatus}
                             </Text>
@@ -110,12 +110,12 @@ export default function DetailsScreen() {
                             <View style={{ flex: 1 }}>
                                 <Text variant="body-sm">Total</Text>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                    <Text variant="title">{getPrice(data, count)}</Text>
+                                    <Text variant="title">{getPrice(data?.price, data?.discountPercentage, count)}</Text>
                                     <Text
                                         variant="title"
                                         style={[
                                             { marginTop: 2, paddingHorizontal: 4, fontSize: 10, lineHeight: 12 },
-                                            { backgroundColor: colors?.notification, borderRadius: 8 },
+                                            { backgroundColor: notification, borderRadius: 8 },
                                         ]}>
                                         {-data?.discountPercentage}%
                                     </Text>

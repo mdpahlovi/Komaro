@@ -1,5 +1,5 @@
-import { useTheme } from '@react-navigation/native';
 import { Text } from 'components/ui';
+import { useColors } from 'hooks/useColors';
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
@@ -20,7 +20,7 @@ export default function PriceRangeSelector({
     onStartPriceChange: (value: number) => void;
     onEndPriceChange: (value: number) => void;
 }) {
-    const { colors } = useTheme();
+    const { primary, border, card } = useColors();
     const [barWidth, setBarWidth] = useState(0);
     const leftHandlePos = useSharedValue(0);
     const rightHandlePos = useSharedValue(0);
@@ -59,21 +59,17 @@ export default function PriceRangeSelector({
     const bars = useMemo(
         () => (
             <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                {new Array(Math.round(maxPrice / 50)).fill('').map((_, i) => {
-                    const randomValue = Math.random();
-
-                    return (
-                        <View
-                            key={i}
-                            style={{
-                                flex: 1,
-                                height: Math.round(randomValue * 40) + 8,
-                                backgroundColor: colors.primary,
-                                opacity: Math.max(0.2, Math.min(0.5, randomValue)),
-                            }}
-                        />
-                    );
-                })}
+                {new Array(Math.round(maxPrice / 50)).fill('').map((_, i) => (
+                    <View
+                        key={i}
+                        style={{
+                            flex: 1,
+                            height: Math.round(Math.random() * 40) + 8,
+                            backgroundColor: primary,
+                            opacity: Math.max(0.2, Math.min(0.5, Math.random())),
+                        }}
+                    />
+                ))}
             </View>
         ),
         []
@@ -82,7 +78,7 @@ export default function PriceRangeSelector({
     useEffect(() => {
         if (barWidth === 0) return;
 
-        leftHandlePos.value = (startPrice * barWidth) / maxPrice;
+        leftHandlePos.value = (startPrice * barWidth) / minPrice;
         rightHandlePos.value = (endPrice * barWidth) / maxPrice;
     }, [barWidth]);
 
@@ -93,22 +89,20 @@ export default function PriceRangeSelector({
             </View>
             {bars}
             <View
-                style={{ height: 1, width: '100%', backgroundColor: colors.border, position: 'relative', marginBottom: 16 }}
+                style={{ height: 1, width: '100%', backgroundColor: border, position: 'relative', marginBottom: 16 }}
                 onLayout={(event) => setBarWidth(event.nativeEvent.layout.width)}>
-                <Animated.View style={[barHighlightStyle, { position: 'absolute', height: '100%', backgroundColor: colors.primary }]} />
+                <Animated.View style={[barHighlightStyle, { position: 'absolute', height: '100%', backgroundColor: primary }]} />
 
                 <PanGestureHandler onGestureEvent={startHandleGesture}>
                     <Animated.View style={[leftHandleStyle, { position: 'absolute', zIndex: 10 }]}>
-                        <View
-                            style={{ backgroundColor: colors.card, width: 1000, position: 'absolute', right: 20, height: 48, bottom: 20 }}
-                        />
+                        <View style={{ backgroundColor: card, width: 1000, position: 'absolute', right: 20, height: 48, bottom: 20 }} />
                         <SliderHandle label={`$${startPrice}`} />
                     </Animated.View>
                 </PanGestureHandler>
 
                 <PanGestureHandler onGestureEvent={rightHandleGesture}>
                     <Animated.View style={[rightHandleStyle, { position: 'absolute', zIndex: 10 }]}>
-                        <View style={{ backgroundColor: colors.card, width: 1000, position: 'absolute', height: 48, bottom: 20 }} />
+                        <View style={{ backgroundColor: card, width: 1000, position: 'absolute', height: 48, bottom: 20 }} />
                         <SliderHandle label={`$${endPrice}`} />
                     </Animated.View>
                 </PanGestureHandler>
@@ -118,8 +112,7 @@ export default function PriceRangeSelector({
 }
 
 function SliderHandle({ label }: { label: string }) {
-    const { colors } = useTheme();
-
+    const { primary, background } = useColors();
     return (
         <View
             style={{
@@ -128,13 +121,13 @@ function SliderHandle({ label }: { label: string }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 10,
-                borderColor: colors.primary,
-                backgroundColor: colors.background,
+                borderColor: primary,
+                backgroundColor: background,
                 borderWidth: 2,
                 position: 'relative',
                 transform: [{ translateX: -10 }, { translateY: -10 }],
             }}>
-            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: colors.primary }} />
+            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: primary }} />
             <View style={{ position: 'absolute', top: 20, width: 200, alignItems: 'center' }}>
                 <Text style={{ fontSize: 12 }}>{label}</Text>
             </View>

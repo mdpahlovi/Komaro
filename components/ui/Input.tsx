@@ -1,10 +1,8 @@
-import { useTheme } from '@react-navigation/native';
-import Color from 'color';
+import { useColors } from 'hooks/useColors';
 import { TextInput, TextInputProps } from 'react-native';
 
 export default function Input({ style, placeholderTextColor, ...props }: TextInputProps) {
-    const { colors } = useTheme();
-    const { text, card, border } = colors;
+    const { text, textLight, card, border } = useColors();
 
     return (
         <TextInput
@@ -13,7 +11,7 @@ export default function Input({ style, placeholderTextColor, ...props }: TextInp
                 { flex: 1, paddingHorizontal: 20, borderRadius: 9999, fontFamily: 'Roboto-Medium' },
                 style,
             ]}
-            placeholderTextColor={placeholderTextColor || Color(text).alpha(0.75).toString()}
+            placeholderTextColor={placeholderTextColor || textLight}
             {...props}
         />
     );

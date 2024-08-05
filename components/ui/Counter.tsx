@@ -1,13 +1,14 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
-import { Pressable, View, Text } from 'react-native';
+import { useColors } from 'hooks/useColors';
+import { Pressable, View, Text, StyleProp, ViewStyle } from 'react-native';
 
-export default function Counter({ value, onChange, maxValue }: { value: number; onChange: (value: number) => void; maxValue?: number }) {
-    const { colors } = useTheme();
-    const { primary, card, text } = colors;
+type CounterProps = { value: number; onChange: (value: number) => void; maxValue?: number; style?: StyleProp<ViewStyle> };
+
+export default function Counter({ value, onChange, maxValue, style }: CounterProps) {
+    const { primary: backgroundColor, card, text } = useColors();
 
     return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: primary, padding: 6, borderRadius: 22 }}>
+        <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor, padding: 6, borderRadius: 22 }, style]}>
             <Pressable
                 onPress={() => onChange(Math.max(1, value - 1))}
                 style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', borderRadius: 16, backgroundColor: card }}>

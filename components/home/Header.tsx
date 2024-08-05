@@ -1,10 +1,10 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
 import { Avatar, Button, Text } from 'components/ui';
+import { useColors } from 'hooks/useColors';
 import { View } from 'react-native';
 
 export default function Header() {
-    const { colors } = useTheme();
+    const { text } = useColors();
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
@@ -16,7 +16,7 @@ export default function Header() {
                 </Text>
             </View>
             <Button iconButton>
-                <MaterialIcons name="notifications" size={24} color={colors.text} />
+                <MaterialIcons name="notifications" size={24} color={text} />
             </Button>
         </View>
     );
