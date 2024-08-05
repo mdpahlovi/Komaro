@@ -4,7 +4,7 @@ import { Filter as FilterIcon } from 'components/icons';
 import { Button, Input } from 'components/ui';
 import { useColors } from 'hooks/useColors';
 import { useRef } from 'react';
-import { View, ScrollView, type NativeScrollEvent } from 'react-native';
+import { View, ScrollView, type NativeScrollEvent, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) =>
@@ -23,6 +23,7 @@ export default function HomeScreen() {
                 onScroll={({ nativeEvent }) => (isCloseToBottom(nativeEvent) && !isFetchingNextPage ? fetchNextPage() : null)}
                 contentContainerStyle={{ padding: 16, paddingBottom: 16 + 28, gap: 16 }}>
                 <Header />
+                <Image source={require('@/assets/banner.jpg')} style={{ flex: 1, width: undefined, height: 192, borderRadius: 20 }} />
                 <View style={{ flexDirection: 'row', gap: 16 }}>
                     <Input placeholder="Search..." />
                     <Button variant="primary" onPress={() => bottomSheetModalRef.current?.present()} iconButton>

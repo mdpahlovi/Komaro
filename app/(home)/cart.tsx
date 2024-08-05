@@ -1,10 +1,12 @@
 import { ActionButton, Counter, Text } from 'components/ui';
+import { useRouter } from 'expo-router';
 import { useCartState } from 'hooks/useCartState';
 import { useColors } from 'hooks/useColors';
 import { FlatList, Image, View } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
 export default function CardScreen() {
+    const { navigate } = useRouter();
     const { items, removeFromCart, updateQuantity } = useCartState();
     const { card: backgroundColor, border: borderColor } = useColors();
 
@@ -13,11 +15,11 @@ export default function CardScreen() {
             data={items}
             style={{ padding: 16 }}
             ListEmptyComponent={<Text variant="body"> OPPS! No Products Available in Cart...!</Text>}
-            contentContainerStyle={{ gap: 16 }}
+            contentContainerStyle={{ gap: 6 }}
             renderItem={({ item: { id, title, thumbnail, price, quantity, stock } }) => (
                 <Swipeable key={id} renderRightActions={() => <RightAction />} onSwipeableOpen={() => removeFromCart(id)}>
                     <View style={{ flex: 1, backgroundColor, flexDirection: 'row', borderWidth: 1, borderColor, borderRadius: 20, gap: 6 }}>
-                        <Image src={thumbnail} style={{ width: 96, height: 96 }} />
+                        <Image src={thumbnail} style={{ width: 104, height: 104 }} />
                         <View style={{ flex: 1, justifyContent: 'center', paddingVertical: 6 }}>
                             <Text variant="title-lg">{title}</Text>
                             <Text variant="heading">
@@ -33,7 +35,8 @@ export default function CardScreen() {
                     </View>
                 </Swipeable>
             )}
-            ListFooterComponent={items?.length ? <ActionButton>Proceed To Pay</ActionButton> : null}
+            ListFooterComponent={items?.length ? <ActionButton onPress={() => navigate('/checkout')}>Proceed To Pay</ActionButton> : null}
+            ListFooterComponentStyle={{ marginTop: 10 }}
         />
     );
 }

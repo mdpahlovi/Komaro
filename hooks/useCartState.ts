@@ -16,7 +16,7 @@ export const useCartState = create<CartState>((set) => ({
         set(({ items }) => {
             const isExist = items.find((i) => i.id === item.id);
             if (isExist) {
-                return { items: items.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i)) };
+                return { items: [...items.filter((i) => i.id !== item.id), item] };
             } else {
                 return { items: [...items, item] };
             }

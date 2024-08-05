@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Bag, Heart } from 'components/icons';
 import { StarFilled } from 'components/icons/filled';
 import { Counter, Button, ActionButton, Text, BackButton } from 'components/ui';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCartState } from 'hooks/useCartState';
 import { useColors } from 'hooks/useColors';
 import { useLovedProductsState } from 'hooks/useLovedProductState';
@@ -19,6 +19,7 @@ const getPrice = (price: number, discount: number, count: number) =>
 
 export default function DetailsScreen() {
     const { primary, text, card, notification } = useColors();
+    const { navigate } = useRouter();
     const { id } = useLocalSearchParams();
     const [layout, setLayout] = useState<LayoutRectangle>();
     const { count, setCount } = useProductState();
@@ -124,7 +125,16 @@ export default function DetailsScreen() {
                                 </View>
                             </View>
 
-                            <ActionButton>Proceed Pay</ActionButton>
+                            <ActionButton
+                                onPress={() => {
+                                    if (!data) return;
+                                    const { id, title, thumbnail, price, discountPercentage: discount, stock } = data;
+
+                                    addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
+                                    navigate('/checkout');
+                                }}>
+                                Proceed To Pay
+                            </ActionButton>
                         </View>
                     </View>
                 </BottomSheet>

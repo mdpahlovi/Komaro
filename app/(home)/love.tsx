@@ -13,7 +13,7 @@ export default function PaymentScreen() {
             data={lovedProducts}
             style={{ padding: 16 }}
             ListEmptyComponent={<Text variant="body">OPPS! No Loved Products Available...!</Text>}
-            contentContainerStyle={{ gap: 16 }}
+            contentContainerStyle={{ gap: 6 }}
             renderItem={({ item: { id, title, thumbnail, price } }) => (
                 <Swipeable key={id} renderRightActions={() => <RightAction />} onSwipeableOpen={() => removeFromLovedProducts(id)}>
                     <View style={{ flex: 1, backgroundColor, flexDirection: 'row', borderWidth: 1, borderColor, borderRadius: 20 }}>

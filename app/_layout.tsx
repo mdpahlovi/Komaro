@@ -41,7 +41,10 @@ export default function RootLayout() {
                         <Stack screenOptions={{ headerShown: false }}>
                             <Stack.Screen name="index" />
                             <Stack.Screen name="details/[id]" />
-                            <Stack.Screen name="checkout" />
+                            <Stack.Screen
+                                name="checkout"
+                                options={{ headerShown: true, title: 'Checkout', headerTitleStyle: { fontFamily: 'Roboto-Bold' } }}
+                            />
                         </Stack>
                     </BottomSheetModalProvider>
                 </GestureHandlerRootView>
