@@ -8,7 +8,16 @@ type ButtonProps = {
     textStyle?: StyleProp<TextStyle>;
 } & PressableProps;
 
-export default function Button({ style, children, iconButton, variant = 'default', size = 'default', textStyle, ...props }: ButtonProps) {
+export default function Button({
+    style,
+    children,
+    iconButton,
+    variant = 'default',
+    size = 'default',
+    textStyle,
+    disabled,
+    ...props
+}: ButtonProps) {
     const { card, primary, border, text } = useColors();
 
     return (
@@ -20,6 +29,7 @@ export default function Button({ style, children, iconButton, variant = 'default
                 variant === 'primary' ? { backgroundColor: primary } : null,
                 variant === 'outlined' ? { borderWidth: 1, borderColor: border } : null,
                 iconButton ? { width: size === 'small' ? 36 : 44 } : { paddingHorizontal: size === 'small' ? 16 : 20 },
+                disabled ? { opacity: 0.3, pointerEvents: 'none' } : null,
                 style as StyleProp<ViewStyle>,
             ]}>
             <Text

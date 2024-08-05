@@ -13,8 +13,8 @@ const getPrice = (price: number, discount: number) =>
 export default function ProductCard({ id, title, thumbnail, price, discountPercentage: discount, stock }: Product) {
     const { border, card, text } = useColors();
     const { navigate } = useRouter();
-    const { addToCart } = useCartState();
-    const { addToLovedProducts } = useLovedProductsState();
+    const { items, addToCart } = useCartState();
+    const { lovedProducts, addToLovedProducts } = useLovedProductsState();
 
     return (
         <View style={{ flex: 1, position: 'relative' }}>
@@ -34,13 +34,15 @@ export default function ProductCard({ id, title, thumbnail, price, discountPerce
                         <Text style={{ fontFamily: 'Roboto-Medium', color: text, paddingLeft: 8 }}>{getPrice(price, discount)}</Text>
                         <View style={{ flexDirection: 'row', gap: 3 }}>
                             <IconButton
-                                onPress={() => addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) })}>
+                                onPress={() => addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) })}
+                                disabled={!!lovedProducts.find((lovedProduct) => lovedProduct?.id === id)}>
                                 <Heart transform={[{ scale: 0.7 }]} />
                             </IconButton>
                             <IconButton
                                 onPress={() =>
                                     addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: 1, stock })
-                                }>
+                                }
+                                disabled={!!items.find((item) => item?.id === id)}>
                                 <Bag transform={[{ scale: 0.7 }]} />
                             </IconButton>
                         </View>
@@ -55,10 +57,13 @@ export default function ProductCard({ id, title, thumbnail, price, discountPerce
     );
 }
 
-function IconButton(props: PressableProps) {
+function IconButton({ disabled, ...props }: PressableProps) {
     return (
         <Pressable
-            style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}
+            style={[
+                { width: 26, height: 26, borderRadius: 13, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' },
+                disabled ? { opacity: 0.3, pointerEvents: 'none' } : null,
+            ]}
             {...props}
         />
     );

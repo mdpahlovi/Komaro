@@ -14,7 +14,7 @@ export default function CardScreen() {
             style={{ padding: 16 }}
             ListEmptyComponent={<Text variant="body"> OPPS! No Products Available in Cart...!</Text>}
             contentContainerStyle={{ gap: 16 }}
-            renderItem={({ item: { id, title, thumbnail, price, quantity } }) => (
+            renderItem={({ item: { id, title, thumbnail, price, quantity, stock } }) => (
                 <Swipeable key={id} renderRightActions={() => <RightAction />} onSwipeableOpen={() => removeFromCart(id)}>
                     <View style={{ flex: 1, backgroundColor, flexDirection: 'row', borderWidth: 1, borderColor, borderRadius: 20, gap: 6 }}>
                         <Image src={thumbnail} style={{ width: 96, height: 96 }} />
@@ -27,6 +27,7 @@ export default function CardScreen() {
                         <Counter
                             value={quantity}
                             onChange={(value) => updateQuantity(id, value)}
+                            maxValue={stock}
                             style={{ flexDirection: 'column-reverse', paddingLeft: 0, backgroundColor: 'transparent' }}
                         />
                     </View>

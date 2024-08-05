@@ -22,8 +22,8 @@ export default function DetailsScreen() {
     const { id } = useLocalSearchParams();
     const [layout, setLayout] = useState<LayoutRectangle>();
     const { count, setCount } = useProductState();
-    const { addToCart } = useCartState();
-    const { addToLovedProducts } = useLovedProductsState();
+    const { items, addToCart } = useCartState();
+    const { lovedProducts, addToLovedProducts } = useLovedProductsState();
 
     const { data } = useQuery<Product>({
         queryKey: ['product', { id }],
@@ -50,6 +50,7 @@ export default function DetailsScreen() {
 
                         addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) });
                     }}
+                    disabled={data && !!lovedProducts.find(({ id }) => id === data?.id)}
                     iconButton>
                     <Heart color={text} />
                 </Button>
@@ -60,6 +61,7 @@ export default function DetailsScreen() {
 
                         addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
                     }}
+                    disabled={data && !!items.find(({ id }) => id === data?.id)}
                     iconButton>
                     <Bag color={text} />
                 </Button>
