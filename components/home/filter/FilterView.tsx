@@ -1,31 +1,15 @@
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Button, Text, ActionButton } from 'components/ui';
+import { Button, Text, ActionButton, RangeSlider, Input } from 'components/ui';
 import { useState } from 'react';
 import { View, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import PriceRangeSelector from './PriceRangeSelector';
-
+const MIN_PRICE = 10;
 const MAX_PRICE = 500;
 
-const COLORS = [
-    { color: '#D93F3E', label: 'Red', itemCount: 4 },
-    { color: '#FFFFFF', label: 'White', itemCount: 2 },
-    { color: '#58AB51', label: 'Green', itemCount: 6 },
-    { color: '#FB8C1D', label: 'Orange', itemCount: 10 },
-    { color: '#D3B38D', label: 'Tan', itemCount: 10 },
-    { color: '#FDE737', label: 'Yellow', itemCount: 10 },
-];
-
-const SLEEVES = [
-    { id: 'sortsleeve', label: 'Sort Sleeve', itemCount: 20 },
-    { id: 'longsleeve', label: 'Long Sleeve', itemCount: 100 },
-    { id: 'sleeveless', label: 'Sleeve Less', itemCount: 60 },
-];
-
 export default function FilterView() {
-    const [startPrice, setStartPrice] = useState(50);
-    const [endPrice, setEndPrice] = useState(250);
+    const [minPrice, setMinPrice] = useState(MIN_PRICE);
+    const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
     const { bottom } = useSafeAreaInsets();
 
     return (
@@ -40,15 +24,35 @@ export default function FilterView() {
                     </View>
 
                     {/* Range Selector */}
-
-                    <PriceRangeSelector
-                        minPrice={0}
-                        maxPrice={MAX_PRICE}
-                        startPrice={startPrice}
-                        endPrice={endPrice}
-                        onStartPriceChange={setStartPrice}
-                        onEndPriceChange={setEndPrice}
-                    />
+                    <View style={{ gap: 6 }}>
+                        <Text variant="title">Price Range</Text>
+                        <View style={{ marginTop: 4, gap: 28 }}>
+                            <RangeSlider
+                                min={MIN_PRICE}
+                                max={MAX_PRICE}
+                                step={1}
+                                onValueChange={({ min, max }) => {
+                                    setMinPrice(min);
+                                    setMaxPrice(max);
+                                }}
+                            />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View style={{ gap: 4 }}>
+                                    <Text variant="action">Min Price</Text>
+                                    <Input size="small" keyboardType="numeric" value={minPrice.toString()} style={{ width: 96 }} />
+                                </View>
+                                <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                                    <Text variant="action">Max Price</Text>
+                                    <Input
+                                        size="small"
+                                        keyboardType="numeric"
+                                        value={maxPrice.toString()}
+                                        style={{ width: 96, textAlign: 'right' }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
 
                     {/* Sports Category Filter */}
                     <View style={{ gap: 6 }}>
@@ -65,7 +69,14 @@ export default function FilterView() {
                     <View style={{ gap: 6 }}>
                         <Text variant="title">Color</Text>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                            {COLORS.map(({ color, label, itemCount }, i) => (
+                            {[
+                                { color: '#D93F3E', label: 'Red', itemCount: 4 },
+                                { color: '#FFFFFF', label: 'White', itemCount: 2 },
+                                { color: '#58AB51', label: 'Green', itemCount: 6 },
+                                { color: '#FB8C1D', label: 'Orange', itemCount: 10 },
+                                { color: '#D3B38D', label: 'Tan', itemCount: 10 },
+                                { color: '#FDE737', label: 'Yellow', itemCount: 10 },
+                            ].map(({ color, label, itemCount }, i) => (
                                 <View key={i} style={{ position: 'relative', justifyContent: 'center' }}>
                                     <Button variant={i === 0 ? 'primary' : 'default'} size="small">
                                         {'     ' + label} [{itemCount}]
@@ -79,7 +90,11 @@ export default function FilterView() {
                     <View style={{ gap: 6 }}>
                         <Text variant="title">Sleeves</Text>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                            {SLEEVES.map(({ itemCount, label }, i) => (
+                            {[
+                                { id: 'sortsleeve', label: 'Sort Sleeve', itemCount: 20 },
+                                { id: 'longsleeve', label: 'Long Sleeve', itemCount: 100 },
+                                { id: 'sleeveless', label: 'Sleeve Less', itemCount: 60 },
+                            ].map(({ itemCount, label }, i) => (
                                 <Button key={i} variant={i === 0 ? 'primary' : 'default'} size="small">
                                     {label} [{itemCount}]
                                 </Button>
