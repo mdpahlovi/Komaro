@@ -3,8 +3,8 @@ import { View } from 'react-native';
 
 export default function ProfileScreen() {
     return (
-        <View>
-            <Text>ProfileScreen</Text>
+        <View style={{ padding: 16 }}>
+            <Text>Profile Screen Coming Soon</Text>
         </View>
     );
 }
