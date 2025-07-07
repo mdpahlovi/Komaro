@@ -1,7 +1,7 @@
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Button, Text, ActionButton, RangeSlider, Input } from 'components/ui';
+import { ActionButton, Button, Input, RangeSlider, Text } from 'components/ui';
 import { useState } from 'react';
-import { View, Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const MIN_PRICE = 10;
@@ -17,7 +17,7 @@ export default function FilterView() {
             <BottomSheetScrollView>
                 <View style={{ paddingHorizontal: 16, gap: 16 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Text variant="heading">Filters</Text>
+                        <Text variant="heading">FILTERS</Text>
                         <Pressable>
                             <Text variant="action-link">See All</Text>
                         </Pressable>

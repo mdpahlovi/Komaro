@@ -4,9 +4,11 @@ import { useCartState } from 'hooks/useCartState';
 import { useColors } from 'hooks/useColors';
 import { FlatList, Image, View } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function CardScreen() {
     const { navigate } = useRouter();
+    const { bottom } = useSafeAreaInsets();
     const { items, removeFromCart, updateQuantity } = useCartState();
     const { card: backgroundColor, border: borderColor } = useColors();
 
@@ -35,7 +37,14 @@ export default function CardScreen() {
                     </View>
                 </Swipeable>
             )}
-            ListFooterComponent={items?.length ? <ActionButton onPress={() => navigate('/checkout')}>Proceed To Pay</ActionButton> : null}
+            ListFooterComponent={
+                items?.length ? (
+                    <>
+                        <ActionButton onPress={() => navigate('/checkout')}>Proceed To Pay</ActionButton>
+                        <View style={{ height: 10 + 28 + bottom }} />
+                    </>
+                ) : null
+            }
             ListFooterComponentStyle={{ marginTop: 10 }}
         />
     );

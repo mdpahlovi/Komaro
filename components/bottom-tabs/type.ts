@@ -5,7 +5,7 @@ export type BottomTabBarItemProps = {
     focused: boolean;
     icon: (props: { focused: boolean; size: number; color: string }) => React.ReactNode;
     badge?: number | string;
-    to?: string;
+    href?: string;
     onPress: (e: React.MouseEvent<HTMLElement, MouseEvent> | GestureResponderEvent) => void;
     onLongPress: (e: GestureResponderEvent) => void;
 };

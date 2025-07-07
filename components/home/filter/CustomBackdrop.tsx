@@ -10,6 +10,7 @@ export default function CustomBackdrop({ animatedIndex, style }: BottomSheetBack
         backgroundColor: `rgba(0, 0, 0, ${interpolate(animatedIndex.value, [-1, 0], [0, 0.5], Extrapolate.CLAMP)})`,
     }));
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const containerStyle = useMemo(() => [style, containerAnimatedStyle], [style]);
 
     const blurViewProps = useAnimatedProps(() => ({ intensity: interpolate(animatedIndex.value, [-1, 0], [0, 20], Extrapolate.CLAMP) }));

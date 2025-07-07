@@ -1,9 +1,9 @@
 {
     "expo": {
-        "name": "ecommerce",
-        "slug": "ecommerce",
+        "name": "Komaro",
+        "slug": "Komaro",
         "version": "1.0.0",
-        "scheme": "ecommerce",
+        "scheme": "Komaro",
         "web": {
             "bundler": "metro",
             "output": "static",

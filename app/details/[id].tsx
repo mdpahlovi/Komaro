@@ -1,27 +1,26 @@
-import BottomSheet from '@gorhom/bottom-sheet';
 import { useQuery } from '@tanstack/react-query';
 import { Bag, Heart } from 'components/icons';
 import { StarFilled } from 'components/icons/filled';
-import { Counter, Button, ActionButton, Text, BackButton } from 'components/ui';
+import { ActionButton, BackButton, Button, Counter, Text } from 'components/ui';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCartState } from 'hooks/useCartState';
 import { useColors } from 'hooks/useColors';
 import { useLovedProductsState } from 'hooks/useLovedProductState';
 import { useProductState } from 'hooks/useProductState';
-import { useState } from 'react';
-import { View, Image, type LayoutRectangle, Dimensions, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Product } from 'types';
 import { axios } from 'utilities/axios';
+
+const { width } = Dimensions.get('window');
 
 const getPrice = (price: number, discount: number, count: number) =>
     (price * count * ((100 - discount) / 100)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
 export default function DetailsScreen() {
-    const { primary, text, card, notification } = useColors();
+    const { primary, text, textLight, card, background } = useColors();
     const { navigate } = useRouter();
     const { id } = useLocalSearchParams();
-    const [layout, setLayout] = useState<LayoutRectangle>();
     const { count, setCount } = useProductState();
     const { items, addToCart } = useCartState();
     const { lovedProducts, addToLovedProducts } = useLovedProductsState();
@@ -31,114 +30,137 @@ export default function DetailsScreen() {
         queryFn: async () => await axios.get(`/products/${id}`).then((res) => res.data),
     });
 
+    const styles = StyleSheet.create({
+        actionsContainer: {
+            position: 'absolute',
+            top: 8,
+            left: 16,
+            right: 16,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        contentContainer: {
+            flex: 1,
+            backgroundColor: card,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            padding: 16,
+        },
+    });
+
+    if (!data) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: background,
+                }}>
+                <ActivityIndicator size="large" color={primary} />
+            </View>
+        );
+    }
+
     return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-            {data ? (
-                <Image src={data?.thumbnail} style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width }} />
-            ) : (
-                <View>
-                    <ActivityIndicator size={120} color={primary} />
+        <SafeAreaView style={{ flex: 1, backgroundColor: background }}>
+            <View style={{ width: width, height: width, position: 'relative' }}>
+                <Image source={{ uri: data.thumbnail }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+
+                <View style={styles.actionsContainer}>
+                    <BackButton />
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                        <Button
+                            onPress={() => {
+                                const { id, title, thumbnail, price, discountPercentage: discount } = data;
+                                addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) });
+                            }}
+                            iconButton>
+                            <Heart color={lovedProducts.find(({ id }) => id === data.id) ? '#EF4444' : '#FFFFFF'} />
+                        </Button>
+                        <Button
+                            onPress={() => {
+                                const { id, title, thumbnail, price, discountPercentage: discount, stock } = data;
+                                addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
+                            }}
+                            iconButton>
+                            <Bag color={items.find(({ id }) => id === data.id) ? primary : '#FFFFFF'} />
+                        </Button>
+                    </View>
                 </View>
-            )}
+            </View>
 
-            <SafeAreaView edges={['top']} style={[{ position: 'absolute', top: 16, left: 16, right: 16, flexDirection: 'row', gap: 8 }]}>
-                <BackButton />
-                <View style={{ flex: 1 }} />
-                <Button
-                    onPress={() => {
-                        if (!data) return;
-                        const { id, title, thumbnail, price, discountPercentage: discount } = data;
+            <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: text }}>{data.title}</Text>
 
-                        addToLovedProducts({ id, title, thumbnail, price: price * ((100 - discount) / 100) });
-                    }}
-                    disabled={data && !!lovedProducts.find(({ id }) => id === data?.id)}
-                    iconButton>
-                    <Heart color={text} />
-                </Button>
-                <Button
-                    onPress={() => {
-                        if (!data) return;
-                        const { id, title, thumbnail, price, discountPercentage: discount, stock } = data;
+                <View style={{ marginTop: 8, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <View style={{ flexDirection: 'row', gap: 4 }}>
+                        {new Array(5).fill('').map((_, i) => (
+                            <StarFilled key={i} color="#FBBF24" size={18} />
+                        ))}
+                    </View>
+                    <Text style={{ fontSize: 14, color: textLight }}>
+                        {data.rating} ({data.reviews?.length.toString().padStart(2, '0')} Reviews)
+                    </Text>
+                </View>
 
-                        addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
-                    }}
-                    disabled={data && !!items.find(({ id }) => id === data?.id)}
-                    iconButton>
-                    <Bag color={text} />
-                </Button>
-            </SafeAreaView>
+                <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    {/* Status Section */}
+                    <View
+                        style={[
+                            { height: 36, paddingInline: 12, justifyContent: 'center', borderRadius: 18 },
+                            {
+                                backgroundColor:
+                                    data.availabilityStatus === 'In Stock' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                            },
+                        ]}>
+                        <Text
+                            style={[
+                                { fontFamily: 'Roboto-Medium' },
+                                {
+                                    color: data.availabilityStatus === 'In Stock' ? '#22C55E' : '#EF4444',
+                                },
+                            ]}>
+                            {data.stock.toString().padStart(2, '0')} - {data.availabilityStatus}
+                        </Text>
+                    </View>
+                    <Counter value={count} onChange={setCount} maxValue={data.stock} />
+                </View>
 
-            {data ? (
-                <BottomSheet
-                    detached
-                    snapPoints={[124, (layout?.height || 0) + 44]}
-                    backgroundStyle={{ borderBottomStartRadius: 0, borderBottomEndRadius: 0, backgroundColor: card }}
-                    handleIndicatorStyle={{ backgroundColor: primary }}>
-                    <View onLayout={(e) => setLayout(e.nativeEvent.layout)} style={{ paddingHorizontal: 16, gap: 16 }}>
-                        <Text variant="heading">{data?.title}</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                            <View>
-                                <View style={{ flexDirection: 'row', gap: 4 }}>
-                                    {new Array(5).fill('').map((_, i) => (
-                                        <StarFilled key={i} color="#facc15" size={16} />
-                                    ))}
-                                </View>
-                                <Text variant="body-sm">
-                                    {data?.rating} ({(data?.reviews?.length).toString().padStart(2, '0')} Reviews)
-                                </Text>
-                            </View>
-                            <Counter value={count} onChange={setCount} maxValue={data?.stock} />
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text
-                                variant="title"
-                                style={[
-                                    { paddingHorizontal: 10, paddingVertical: 4, lineHeight: 18, borderRadius: 9999 },
-                                    { backgroundColor: data?.availabilityStatus === 'In Stock' ? 'green' : notification },
-                                ]}>
-                                {(data?.stock).toString().padStart(2, '0')} - {data?.availabilityStatus}
-                            </Text>
-                            <View style={{ flex: 1 }} />
-                        </View>
-                        <View>
-                            <Text variant="title">Description</Text>
-                            <Text variant="body">{data?.description}</Text>
-                            <Text>→ {data?.warrantyInformation}</Text>
-                            <Text>
-                                → {data?.shippingInformation} - {data?.returnPolicy}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 1 }} />
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-                            <View style={{ flex: 1 }}>
-                                <Text variant="body-sm">Total</Text>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                    <Text variant="title">{getPrice(data?.price, data?.discountPercentage, count)}</Text>
-                                    <Text
-                                        variant="title"
-                                        style={[
-                                            { marginTop: 2, paddingHorizontal: 4, fontSize: 10, lineHeight: 12 },
-                                            { backgroundColor: notification, borderRadius: 8 },
-                                        ]}>
-                                        {-data?.discountPercentage}%
-                                    </Text>
-                                </View>
-                            </View>
+                {/* Description */}
+                <View style={{ marginBottom: 8 }}>
+                    <Text style={{ fontSize: 16, fontFamily: 'Roboto-Medium', color: text, marginBottom: 4 }}>Description</Text>
+                    <Text style={{ fontSize: 14, color: textLight, marginBottom: 2 }}>{data.description}</Text>
+                    <Text style={{ fontSize: 14, color: textLight }}>• {data.warrantyInformation}</Text>
+                    <Text style={{ fontSize: 14, color: textLight }}>
+                        • {data.shippingInformation} - {data.returnPolicy}
+                    </Text>
+                </View>
 
-                            <ActionButton
-                                onPress={() => {
-                                    if (!data) return;
-                                    const { id, title, thumbnail, price, discountPercentage: discount, stock } = data;
-
-                                    addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
-                                    navigate('/checkout');
-                                }}>
-                                Proceed To Pay
-                            </ActionButton>
+                <View style={{ marginBottom: 16 }}>
+                    <Text style={{ fontSize: 16, fontFamily: 'Roboto-Medium', color: text, marginBottom: 2 }}>Total</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <Text style={{ fontSize: 24, fontFamily: 'Roboto-Bold', color: text }}>
+                            {getPrice(data.price, data.discountPercentage, count)}
+                        </Text>
+                        <View style={{ height: 20, paddingInline: 6, backgroundColor: 'red', borderRadius: 10, justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 12, color: '#FFFFFF' }}>-{data.discountPercentage}%</Text>
                         </View>
                     </View>
-                </BottomSheet>
-            ) : null}
-        </View>
+                </View>
+
+                <ActionButton
+                    onPress={() => {
+                        const { id, title, thumbnail, price, discountPercentage: discount, stock } = data;
+                        addToCart({ id, title, thumbnail, price: price * ((100 - discount) / 100), quantity: count, stock });
+                        navigate('/checkout');
+                    }}
+                    style={{ width: '100%' }}>
+                    Proceed To Pay
+                </ActionButton>
+                <View style={{ height: 32 }} />
+            </ScrollView>
+        </SafeAreaView>
     );
 }

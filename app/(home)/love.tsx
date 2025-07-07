@@ -3,8 +3,10 @@ import { useColors } from 'hooks/useColors';
 import { useLovedProductsState } from 'hooks/useLovedProductState';
 import { FlatList, Image, View } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PaymentScreen() {
+    const { bottom } = useSafeAreaInsets();
     const { card: backgroundColor, border: borderColor } = useColors();
     const { lovedProducts, removeFromLovedProducts } = useLovedProductsState();
 
@@ -25,6 +27,7 @@ export default function PaymentScreen() {
                     </View>
                 </Swipeable>
             )}
+            ListFooterComponent={() => <View style={{ height: 4 + 28 + bottom }} />}
         />
     );
 }
