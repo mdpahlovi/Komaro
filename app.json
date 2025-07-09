@@ -3,13 +3,12 @@
         "name": "Komaro",
         "slug": "Komaro",
         "version": "1.0.0",
-        "scheme": "Komaro",
+        "scheme": "komaro",
         "web": {
             "bundler": "metro",
             "output": "static",
             "favicon": "./assets/favicon.png"
         },
-        "plugins": ["expo-router", "expo-secure-store"],
         "experiments": {
             "typedRoutes": true,
             "tsconfigPaths": true
@@ -17,12 +16,7 @@
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "automatic",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "assetBundlePatterns": ["**/*"],
+        "newArchEnabled": true,
         "ios": {
             "supportsTablet": true
         },
@@ -30,6 +24,32 @@
             "adaptiveIcon": {
                 "foregroundImage": "./assets/icon.png",
                 "backgroundColor": "#ffffff"
+            },
+            "edgeToEdgeEnabled": true,
+            "package": "com.mdpahlovi.Komaro"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "expo-secure-store",
+                {
+                    "configureAndroidBackup": true,
+                    "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+                }
+            ],
+            [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/splash.png",
+                    "resizeMode": "cover",
+                    "backgroundColor": "#ffffff"
+                }
+            ]
+        ],
+        "extra": {
+            "router": {},
+            "eas": {
+                "projectId": "57ea8213-7e0e-44f7-a882-e72ada255eb0"
             }
         }
     }
