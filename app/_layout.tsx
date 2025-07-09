@@ -1,9 +1,10 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useFonts } from 'expo-font';
-import { Stack, SplashScreen } from 'expo-router';
-import { useEffect } from 'react';
+import * as Font from 'expo-font';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useCallback, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -13,30 +14,46 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
     const colorScheme = useColorScheme();
-
-    const [loaded, error] = useFonts({
-        'Roboto-Thin': require('../assets/fonts/Roboto-Thin.ttf'),
-        'Roboto-Light': require('../assets/fonts/Roboto-Light.ttf'),
-        'Roboto-Regular': require('../assets/fonts/Roboto-Regular.ttf'),
-        'Roboto-Medium': require('../assets/fonts/Roboto-Medium.ttf'),
-        'Roboto-Bold': require('../assets/fonts/Roboto-Bold.ttf'),
-        'Roboto-Black': require('../assets/fonts/Roboto-Black.ttf'),
-    });
+    const [appIsReady, setAppIsReady] = useState(false);
 
     useEffect(() => {
-        if (error) throw error;
-    }, [error]);
+        async function prepare() {
+            try {
+                await Font.loadAsync({
+                    'Roboto-Thin': require('../assets/fonts/Roboto-Thin.ttf'),
+                    'Roboto-Light': require('../assets/fonts/Roboto-Light.ttf'),
+                    'Roboto-Regular': require('../assets/fonts/Roboto-Regular.ttf'),
+                    'Roboto-Medium': require('../assets/fonts/Roboto-Medium.ttf'),
+                    'Roboto-Bold': require('../assets/fonts/Roboto-Bold.ttf'),
+                    'Roboto-Black': require('../assets/fonts/Roboto-Black.ttf'),
+                });
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+            } catch (e) {
+                console.warn(e);
+            } finally {
+                setAppIsReady(true);
+            }
+        }
 
-    useEffect(() => {
-        if (loaded) SplashScreen.hideAsync();
-    }, [loaded]);
+        prepare();
+    }, []);
 
-    if (!loaded) return null;
+    const onLayoutRootView = useCallback(() => {
+        if (appIsReady) {
+            setTimeout(() => {
+                SplashScreen.hide();
+            }, 5000);
+        }
+    }, [appIsReady]);
+
+    if (!appIsReady) {
+        return null;
+    }
 
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <GestureHandlerRootView>
+                <GestureHandlerRootView onLayout={onLayoutRootView}>
                     <BottomSheetModalProvider>
                         <Stack screenOptions={{ headerShown: false }}>
                             <Stack.Screen name="index" />
