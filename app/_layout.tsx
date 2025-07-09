@@ -40,9 +40,7 @@ export default function RootLayout() {
 
     const onLayoutRootView = useCallback(() => {
         if (appIsReady) {
-            setTimeout(() => {
-                SplashScreen.hide();
-            }, 5000);
+            SplashScreen.hide();
         }
     }, [appIsReady]);
 
